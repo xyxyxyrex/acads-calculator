@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calculator, Calendar, LogIn, LogOut, Loader2 } from "lucide-react";
+import { Calculator, Calendar, LogOut, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { LoginCard } from "./login-card";
@@ -22,12 +22,15 @@ export default function SelectionButtons() {
       <div className="w-full max-w-2xl space-y-8">
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-bold text-gray-900">
-            Hello, <span className="text-blue-600">{session?.user?.name || 'User'}!</span>
+            Hello,{" "}
+            <span className="text-blue-600">
+              {session?.user?.name || "User"}!
+            </span>
           </h1>
           {session && (
-            <Button 
-              variant="ghost" 
-              onClick={() => signOut({ callbackUrl: '/' })}
+            <Button
+              variant="ghost"
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="flex items-center gap-2"
             >
               <LogOut className="h-4 w-4" />
@@ -38,7 +41,7 @@ export default function SelectionButtons() {
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-900">Choose Your Tool</h1>
           <p className="text-lg text-gray-600">
-            Select the tool you'd like to use
+            Select the tool you&apos;d like to use
           </p>
         </div>
 
