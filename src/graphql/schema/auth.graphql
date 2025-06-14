@@ -1,0 +1,41 @@
+type User {
+  id: ID!
+  name: String
+  email: String!
+  emailVerified: String
+  image: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type AuthPayload {
+  user: User!
+  token: String!
+}
+
+type Query {
+  me: User
+}
+
+type SetPasswordResponse {
+  success: Boolean!
+  message: String
+}
+
+type Mutation {
+  register(input: RegisterInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+  logout: Boolean!
+  setPassword(email: String!, password: String!): SetPasswordResponse!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
