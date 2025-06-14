@@ -24,7 +24,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { toPng, toJpeg } from "html-to-image";
 import { saveAs } from "file-saver";
-import { cn } from "@/lib/utils";
 import { ColorPicker } from "@/components/ui/color-picker";
 
 interface Subject {
@@ -263,7 +262,7 @@ export default function TimetablePage() {
                 <Label className="text-right">Format</Label>
                 <Select
                   value={exportFormat}
-                  onValueChange={(v) => setExportFormat(v as any)}
+                  onValueChange={(v) => setExportFormat(v as "png" | "jpeg")}
                 >
                   <SelectTrigger className="col-span-2">
                     <SelectValue />
