@@ -344,9 +344,7 @@ export function LoginForm({ className, onSuccess, ...props }: LoginFormProps) {
                   type="button"
                   variant="outline"
                   className="w-full"
-                  onClick={() =>
-                    signIn("google", { callbackUrl: "/dashboard" })
-                  }
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -378,9 +376,7 @@ export function LoginForm({ className, onSuccess, ...props }: LoginFormProps) {
                   type="button"
                   variant="outline"
                   className="w-full"
-                  onClick={() =>
-                    signIn("github", { callbackUrl: "/dashboard" })
-                  }
+                  onClick={() => signIn("github", { callbackUrl: "/" })}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
