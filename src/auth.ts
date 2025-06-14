@@ -1,45 +1,13 @@
-import NextAuth, {
-  type NextAuthOptions,
-  type User as NextAuthUser,
-  type Session,
-  type DefaultSession,
-} from "next-auth";
+import type { NextAuthOptions, User as NextAuthUser, Session, DefaultSession } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "./db";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { users, accounts, sessions, verificationTokens } from "./db/schema/auth";
-import { createTransport } from "nodemailer";
-import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
-
-// Database user type (matches your database schema)
-interface DBUser {
-  id: string;  // Changed from number to string since it's a UUID
-  name: string | null;
-  email: string;
-  password: string | null;
-  hashedPassword: string | null;  // Added hashedPassword field
-  image: string | null;
-  emailVerified: Date | null;
-  createdAt: Date;
-  updatedAt: Date | null;
-  emailVerificationToken?: string | null;
-  emailVerificationTokenExpires?: Date | null;
-}
-
-// Extended User type for NextAuth with string IDs
-interface User extends NextAuthUser {
-  id: string;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-  emailVerified?: Date | null;
-  hashedPassword?: string | null;
-}
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -63,15 +31,13 @@ declare module "next-auth" {
 
 // Extend NodeJS.ProcessEnv interface to include our environment variables
 declare global {
-  namespace NodeJS {
-    interface ProcessEnv {
-      GITHUB_ID?: string;
-      GITHUB_SECRET?: string;
-      GOOGLE_CLIENT_ID?: string;
-      GOOGLE_CLIENT_SECRET?: string;
-      NEXTAUTH_SECRET?: string;
-      NEXTAUTH_URL?: string;
-    }
+  interface ProcessEnv {
+    GITHUB_ID?: string;
+    GITHUB_SECRET?: string;
+    GOOGLE_CLIENT_ID?: string;
+    GOOGLE_CLIENT_SECRET?: string;
+    NEXTAUTH_SECRET?: string;
+    NEXTAUTH_URL?: string;
   }
 }
 
@@ -99,17 +65,20 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log('Starting authorization with email:', credentials?.email);
-        
+        console.log("Starting authorization with email:", credentials?.email);
+
         if (!credentials?.email || !credentials?.password) {
-          console.log('Missing email or password');
+          console.log("Missing email or password");
           throw new Error("Email and password are required");
         }
 
         try {
           // Use Drizzle ORM with explicit column selection
-          console.log('Looking up user in database with email:', credentials.email);
-          
+          console.log(
+            "Looking up user in database with email:",
+            credentials.email
+          );
+
           // Explicitly select only the fields we need
           const result = await db
             .select({
@@ -118,63 +87,69 @@ export const authOptions: NextAuthOptions = {
               name: users.name,
               image: users.image,
               emailVerified: users.emailVerified,
-              hashedPassword: users.hashedPassword
+              hashedPassword: users.hashedPassword,
             })
             .from(users)
             .where(eq(users.email, credentials.email))
             .limit(1);
-          
+
           const dbUser = result[0];
-          
+
           // Log minimal user data for debugging (don't log the hashed password)
           if (dbUser) {
-            console.log('User found with ID:', dbUser.id);
-            console.log('Has hashed password:', !!dbUser.hashedPassword);
+            console.log("User found with ID:", dbUser.id);
+            console.log("Has hashed password:", !!dbUser.hashedPassword);
           } else {
-            console.log('No user found with email:', credentials.email);
+            console.log("No user found with email:", credentials.email);
             throw new Error("Invalid email or password");
           }
-          
+
           // Ensure we have the hashed password
           if (!dbUser) {
-            console.log('No user found with email:', credentials.email);
+            console.log("No user found with email:", credentials.email);
             throw new Error("Invalid email or password");
           }
-          
+
           // Log basic info about the found user
-          console.log('User found with ID:', dbUser.id);
-          console.log('Has hashed password:', !!dbUser.hashedPassword);
-          
+          console.log("User found with ID:", dbUser.id);
+          console.log("Has hashed password:", !!dbUser.hashedPassword);
+
           // Additional debug info (be careful with logging sensitive data)
           if (dbUser.hashedPassword) {
-            console.log('Stored hash length:', dbUser.hashedPassword.length);
-            console.log('Hash algorithm:', dbUser.hashedPassword.substring(0, 3));
-            console.log('Stored hash prefix:', dbUser.hashedPassword.substring(0, 3) + '...');
+            console.log("Stored hash length:", dbUser.hashedPassword.length);
+            console.log(
+              "Hash algorithm:",
+              dbUser.hashedPassword.substring(0, 3)
+            );
+            console.log(
+              "Stored hash prefix:",
+              dbUser.hashedPassword.substring(0, 3) + "..."
+            );
           } else {
-            console.error('No hashed password found for user:', dbUser.id);
-            throw new Error('Authentication failed');
+            console.error("No hashed password found for user:", dbUser.id);
+            throw new Error("Authentication failed");
           }
-          
+
           // Compare passwords
           let passwordsMatch = false;
           try {
-            console.log('Comparing passwords...');
+            console.log("Comparing passwords...");
             passwordsMatch = await bcrypt.compare(
               credentials.password,
               dbUser.hashedPassword
             );
-            console.log('Password comparison result:', passwordsMatch);
+            console.log("Password comparison result:", passwordsMatch);
           } catch (error) {
-            console.error('Error comparing passwords:', error);
+            console.error("Error comparing passwords:", error);
             throw new Error("Error during authentication");
           }
-          
+
           if (!passwordsMatch) {
-            console.log('Password does not match for user:', dbUser.id);
+            console.log("Password does not match for user:", dbUser.id);
             throw new Error("Invalid email or password");
           }
-          
-          console.log('Authentication successful for user:', dbUser.id);
+
+          console.log("Authentication successful for user:", dbUser.id);
 
           return {
             id: dbUser.id.toString(),
@@ -184,7 +159,7 @@ export const authOptions: NextAuthOptions = {
             emailVerified: dbUser.emailVerified ?? undefined,
           };
         } catch (error) {
-          console.error('Error in authorization:', error);
+          console.error("Error in authorization:", error);
           throw error; // Re-throw to let NextAuth handle the error
         }
       },

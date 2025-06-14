@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +21,11 @@ interface SignupFormProps extends React.ComponentProps<"div"> {
   onSuccess?: () => void;
 }
 
-export function SignupForm({ className, onSuccess, ...props }: SignupFormProps) {
+export function SignupForm({
+  className,
+  onSuccess,
+  ...props
+}: SignupFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -31,18 +34,18 @@ export function SignupForm({ className, onSuccess, ...props }: SignupFormProps) 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!email || !name || !password) {
       toast.error("Please fill in all fields");
       return;
     }
-    
+
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters long");
       return;
     }
-    
+
     setIsLoading(true);
 
     try {
@@ -67,15 +70,15 @@ export function SignupForm({ className, onSuccess, ...props }: SignupFormProps) 
 
       // If we reach here, registration was successful
       toast.success("Account created successfully! You are now logged in.");
-      
+
       // Redirect to dashboard
       if (onSuccess) {
         onSuccess();
       } else {
         router.push("/");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to sign up");
+    } catch (error: unknown) {
+      toast.error((error as Error).message || "Failed to sign up");
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +88,9 @@ export function SignupForm({ className, onSuccess, ...props }: SignupFormProps) 
     <div className={cn("mx-auto w-full max-w-md", className)} {...props}>
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            Create an account
+          </CardTitle>
           <CardDescription>
             Enter your information to create an account
           </CardDescription>

@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export function LoadingIndicator() {
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
     // Reset loading state when pathname changes
@@ -19,14 +18,14 @@ export function LoadingIndicator() {
     const handleComplete = () => setLoading(false);
 
     // Listen for route changes
-    window.addEventListener('routeChangeStart', handleStart);
-    window.addEventListener('routeChangeComplete', handleComplete);
-    window.addEventListener('routeChangeError', handleComplete);
+    window.addEventListener("routeChangeStart", handleStart);
+    window.addEventListener("routeChangeComplete", handleComplete);
+    window.addEventListener("routeChangeError", handleComplete);
 
     return () => {
-      window.removeEventListener('routeChangeStart', handleStart);
-      window.removeEventListener('routeChangeComplete', handleComplete);
-      window.removeEventListener('routeChangeError', handleComplete);
+      window.removeEventListener("routeChangeStart", handleStart);
+      window.removeEventListener("routeChangeComplete", handleComplete);
+      window.removeEventListener("routeChangeError", handleComplete);
     };
   }, []);
 

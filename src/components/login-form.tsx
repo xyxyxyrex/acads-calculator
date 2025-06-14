@@ -47,11 +47,7 @@ interface LoginFormProps extends React.ComponentProps<"div"> {
   onSuccess?: () => void;
 }
 
-export function LoginForm({
-  className,
-  onSuccess,
-  ...props
-}: LoginFormProps) {
+export function LoginForm({ className, onSuccess, ...props }: LoginFormProps) {
   // Form state
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -68,12 +64,10 @@ export function LoginForm({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isOAuthUser, setIsOAuthUser] = useState(false);
   const [isSettingPassword, setIsSettingPassword] = useState(false);
   const [oauthEmail, setOAuthEmail] = useState("");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
 
   const [setPassword] = useMutation(SET_PASSWORD_MUTATION);
@@ -82,7 +76,6 @@ export function LoginForm({
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {
       setOAuthEmail(session.user.email);
-      setIsOAuthUser(true);
       setIsSettingPassword(true);
 
       // Update form data with OAuth email
@@ -183,7 +176,7 @@ export function LoginForm({
         toast.error("Invalid credentials. Please try again.");
       } else {
         toast.success("Logged in successfully");
-      if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess();
         // Use window.location to ensure full page reload and proper redirect
         window.location.href = result?.url || "/";
       }
@@ -215,7 +208,7 @@ export function LoginForm({
 
       if (data?.setPassword?.success) {
         toast.success("Password set successfully");
-      if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess();
         setIsSettingPassword(false);
         router.push("/");
       } else {
