@@ -1,1 +1,3 @@
-export { GET, POST } from "@/graphql/server";
+import { GET, POST } from "@/graphql/server";
+
+export { GET, POST };
