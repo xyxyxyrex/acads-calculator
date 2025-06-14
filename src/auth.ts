@@ -1,4 +1,4 @@
-import type { NextAuthOptions, User as NextAuthUser, Session, DefaultSession } from "next-auth";
+import type { NextAuthOptions, Session, DefaultSession } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
@@ -6,7 +6,12 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
-import { users, accounts, sessions, verificationTokens } from "./db/schema/auth";
+import {
+  users,
+  accounts,
+  sessions,
+  verificationTokens,
+} from "./db/schema/auth";
 import bcrypt from "bcryptjs";
 
 declare module "next-auth" {

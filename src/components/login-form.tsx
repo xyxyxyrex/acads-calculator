@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import { signIn, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -316,7 +316,7 @@ export function LoginForm({ className, onSuccess, ...props }: LoginFormProps) {
                 )}
               </Button>
               <div className="text-center text-sm text-muted-foreground">
-                Don't have an account?{" "}
+                Don&rsquo;t have an account?{" "}
                 <button
                   type="button"
                   className="font-medium text-primary hover:underline"

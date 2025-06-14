@@ -20,14 +20,14 @@ const AMPM = ["AM", "PM"];
 function toAmPm(hhmm: string): { hour: number; minute: number; ampm: string } {
   if (!hhmm) return { hour: 7, minute: 0, ampm: "AM" };
   const [h, m] = hhmm.split(":").map(Number);
-  let ampm = h >= 12 ? "PM" : "AM";
+  const ampm = h >= 12 ? "PM" : "AM";
   let hour = h % 12;
   if (hour === 0) hour = 12;
   return { hour, minute: m, ampm };
 }
 
 function to24Hour(hour: number, minute: number, ampm: string): string {
-  let h = ampm === "PM" ? (hour === 12 ? 12 : hour + 12) : (hour === 12 ? 0 : hour);
+  const h = ampm === "PM" ? (hour === 12 ? 12 : hour + 12) : (hour === 12 ? 0 : hour);
   return `${h.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
 }
 
@@ -42,7 +42,7 @@ export function TimePicker({ value, onChange, className, label }: TimePickerProp
     setSelHour(hour);
     setSelMinute(minute);
     setSelAmPm(ampm);
-  }, [value]);
+  }, [value, hour, minute, ampm]);
 
   const handleChange = (h: number, m: number, ap: string) => {
     setSelHour(h);

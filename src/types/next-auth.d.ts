@@ -1,6 +1,6 @@
-import NextAuth, { DefaultSession } from 'next-auth';
+import NextAuth, { DefaultSession } from "next-auth";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   /**
    * Extend the built-in session types
    */
@@ -10,7 +10,7 @@ declare module 'next-auth' {
       name?: string | null;
       email?: string | null;
       image?: string | null;
-    } & DefaultSession['user'];
+    } & DefaultSession["user"];
   }
 
   /**
@@ -25,7 +25,7 @@ declare module 'next-auth' {
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   /**
    * Extend the built-in JWT types
    */
